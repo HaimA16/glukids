@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "979729107506",
+    "project_id": "glukids-2df10",
+    "storage_bucket": "glukids-2df10.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:979729107506:android:14961190e1dcb98b744a2b",
+        "android_client_info": {
+          "package_name": "com.example.glukids"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDz9U4Q8gMLxOMYG6UAwC_j2wB5vtm8WQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
