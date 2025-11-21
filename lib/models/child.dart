@@ -77,32 +77,37 @@ class ChildModel {
     };
   }
 
+  // Factory to create from a plain map (useful for testing)
+  factory ChildModel.fromMap(Map<String, dynamic> map, {required String id}) {
+    return ChildModel(
+      id: id,
+      assistantUid: map['assistantUid'] as String,
+      name: map['name'] as String,
+      grade: map['grade'] as String,
+      parentPhone: map['parentPhone'] as String,
+      glucoseMin: (map['glucoseMin'] as num).toDouble(),
+      glucoseMax: (map['glucoseMax'] as num).toDouble(),
+      instructions: map['instructions'] as String,
+      insulinToCarbRatio: map['insulinToCarbRatio'] != null
+          ? (map['insulinToCarbRatio'] as num).toDouble()
+          : null,
+      correctionFactor: map['correctionFactor'] != null
+          ? (map['correctionFactor'] as num).toDouble()
+          : null,
+      targetMin: map['targetMin'] != null
+          ? (map['targetMin'] as num).toDouble()
+          : null,
+      targetMax: map['targetMax'] != null
+          ? (map['targetMax'] as num).toDouble()
+          : null,
+    );
+  }
+
   factory ChildModel.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> doc,
   ) {
     final data = doc.data()!;
-    return ChildModel(
-      id: doc.id,
-      assistantUid: data['assistantUid'] as String,
-      name: data['name'] as String,
-      grade: data['grade'] as String,
-      parentPhone: data['parentPhone'] as String,
-      glucoseMin: (data['glucoseMin'] as num).toDouble(),
-      glucoseMax: (data['glucoseMax'] as num).toDouble(),
-      instructions: data['instructions'] as String,
-      insulinToCarbRatio: data['insulinToCarbRatio'] != null
-          ? (data['insulinToCarbRatio'] as num).toDouble()
-          : null,
-      correctionFactor: data['correctionFactor'] != null
-          ? (data['correctionFactor'] as num).toDouble()
-          : null,
-      targetMin: data['targetMin'] != null
-          ? (data['targetMin'] as num).toDouble()
-          : null,
-      targetMax: data['targetMax'] != null
-          ? (data['targetMax'] as num).toDouble()
-          : null,
-    );
+    return ChildModel.fromMap(data, id: doc.id);
   }
 }
 

@@ -286,14 +286,26 @@ class _InsulinCalculatorScreenState extends ConsumerState<InsulinCalculatorScree
                     ),
                   ),
 
-                  // Result card
+                  // Result card with animation
                   if (_calculationResult != null) ...[
                     const SizedBox(height: 24),
-                    Card(
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 400),
+                      transitionBuilder: (child, animation) {
+                        return ScaleTransition(
+                          scale: animation,
+                          child: FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          ),
+                        );
+                      },
+                      child: Card(
+                        key: ValueKey('result-${_calculationResult!.roundedBolus}'),
                       elevation: 2,
                       color: const Color(0xFF4CAF50).withOpacity(0.05),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(24),
                         side: BorderSide(
                           color: const Color(0xFF4CAF50).withOpacity(0.3),
                           width: 2,
@@ -374,6 +386,7 @@ class _InsulinCalculatorScreenState extends ConsumerState<InsulinCalculatorScree
                             ),
                           ],
                         ),
+                      ),
                       ),
                     ),
                   ],

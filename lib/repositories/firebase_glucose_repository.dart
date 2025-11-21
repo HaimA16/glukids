@@ -49,6 +49,25 @@ class FirebaseGlucoseRepository implements GlucoseRepository {
   }
 
   @override
+  Stream<List<GlucoseReading>> watchReadingsForChildInRange(
+    String childId,
+    DateTime from,
+    DateTime to,
+  ) {
+    return _firestore
+        .collection('glucose_readings')
+        .where('childId', isEqualTo: childId)
+        .where('measuredAt',
+            isGreaterThanOrEqualTo: Timestamp.fromDate(from))
+        .where('measuredAt', isLessThan: Timestamp.fromDate(to))
+        .orderBy('measuredAt', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => GlucoseReading.fromFirestore(doc))
+            .toList());
+  }
+
+  @override
   Future<void> addReading(GlucoseReading reading) async {
     await _firestore
         .collection('glucose_readings')

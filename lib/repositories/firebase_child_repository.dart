@@ -25,6 +25,11 @@ class FirebaseChildRepository implements ChildRepository {
   }
 
   @override
+  Future<void> updateChild(ChildModel child) async {
+    await _firestore.collection('children').doc(child.id).update(child.toMap());
+  }
+
+  @override
   Future<ChildModel> getChildById(String id) async {
     final doc = await _firestore.collection('children').doc(id).get();
     if (!doc.exists) {

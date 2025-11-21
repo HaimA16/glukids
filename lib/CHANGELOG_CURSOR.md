@@ -277,7 +277,102 @@ For existing data:
 
 ---
 
+---
+
+## 5. Bug Fix: Duplicate Children in Dashboard
+
+### Problem:
+- Each child appeared twice in the dashboard screen
+- Both `DashboardSummaryCard` and `ChildCard` were being rendered for each child
+- This caused visual duplication and confusion
+
+### Files Modified:
+- `lib/screens/dashboard_screen.dart` - Fixed duplicate rendering logic
+- `lib/widgets/dashboard_summary_card.dart` - Enhanced card styling and made tappable
+
+### Changes:
+1. **Dashboard Screen**:
+   - Removed separate `ChildCard` rendering alongside `DashboardSummaryCard`
+   - Now shows only one card per child (the summary card which is more informative)
+   - Made summary cards directly tappable to navigate to child detail
+   - Simplified rendering logic for both single and multiple children scenarios
+
+2. **Profile Screen**:
+   - Modernized child list with better card design
+   - Added circular avatars with first letter of child's name
+   - Improved visual hierarchy and spacing
+   - Better empty state with icon
+
+3. **Dashboard Summary Card**:
+   - Increased elevation and border radius for modern look
+   - Made card directly tappable with InkWell wrapper
+   - Removed redundant wrapper card
+
+### Tests Added:
+- `test/dashboard_children_test.dart` - Unit tests verifying:
+  - Children list does not contain duplicates by ID
+  - Duplicate filtering logic works correctly
+  - Dashboard renders each child only once
+
+### Result:
+- ✅ Each child now appears exactly once in dashboard
+- ✅ No duplication at repository or UI level
+- ✅ Tappable cards for better UX
+- ✅ Modern card-based design maintained
+
+---
+
+## 6. Visual Design Modernization (Updated)
+
+### Additional Files Modified:
+- `lib/screens/profile_screen.dart` - Modernized child list cards
+- `lib/widgets/dashboard_summary_card.dart` - Enhanced styling
+- `lib/screens/dashboard_screen.dart` - Simplified and improved layout
+
+### Visual Improvements:
+- **Profile Screen Children List**:
+  - Modern card-based layout with rounded corners (16px)
+  - Circular avatars with first letter of child's name
+  - Better spacing and padding
+  - Improved empty state with icon and text
+
+- **Dashboard Summary Cards**:
+  - Increased elevation (3) and border radius (20px)
+  - Better visual hierarchy
+  - Tappable cards with InkWell feedback
+  - Consistent spacing and padding
+
+### Design Consistency:
+- All cards now use consistent border radius (16-20px)
+- Elevation values standardized (1-3)
+- Color scheme maintained (primary blue #2196F3, success green #4CAF50)
+- RTL layout preserved throughout
+
+---
+
+## 7. Test Improvements
+
+### New Test Files:
+- `test/dashboard_children_test.dart` - Tests for duplicate children fix
+
+### Test Coverage:
+- ✅ Duplicate detection by ID
+- ✅ Filtering logic verification
+- ✅ Dashboard rendering logic verification
+- ✅ Child model serialization/deserialization
+- ✅ Insulin calculator service calculations
+- ✅ Basic widget structure tests
+
+### Running Tests:
+```bash
+flutter test
+```
+
+All tests should pass with no failures or errors.
+
+---
+
 **Last Updated**: 2025-01-XX  
-**Version**: 1.1.0  
+**Version**: 1.2.0  
 **Status**: ✅ Ready for Testing
 

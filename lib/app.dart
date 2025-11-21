@@ -67,9 +67,44 @@ class GluKidApp extends ConsumerWidget {
           }
           return const WelcomeScreen();
         },
-        loading: () => const Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
+        loading: () => Directionality(
+          textDirection: TextDirection.rtl,
+          child: Scaffold(
+            backgroundColor: const Color(0xFFF5F7FA),
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF2196F3).withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.medical_services_rounded,
+                      size: 64,
+                      color: Color(0xFF2196F3),
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  const CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2196F3)),
+                  ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'GluKids',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1A1A1A),
+                      letterSpacing: 1.0,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
         error: (error, stack) => const WelcomeScreen(),

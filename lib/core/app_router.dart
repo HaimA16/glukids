@@ -9,6 +9,11 @@ import '../screens/add_reading_screen.dart';
 import '../screens/add_treatment_screen.dart';
 import '../screens/daily_log_screen.dart';
 import '../screens/insulin_calculator_screen.dart';
+import '../screens/logout_screen.dart';
+import '../screens/profile_screen.dart';
+import '../screens/settings_screen.dart';
+import '../screens/edit_child_screen.dart';
+import '../screens/child_report_screen.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -76,6 +81,35 @@ class AppRouter {
         }
         return MaterialPageRoute(
           builder: (_) => InsulinCalculatorScreen(childId: childId),
+        );
+
+      case '/logout':
+        return MaterialPageRoute(builder: (_) => const LogoutScreen());
+
+      case '/profile':
+        return MaterialPageRoute(builder: (_) => const ProfileScreen());
+
+      case '/settings':
+        return MaterialPageRoute(builder: (_) => const SettingsScreen());
+
+      case '/edit-child':
+        final args = settings.arguments as Map<String, dynamic>?;
+        final childId = args?['childId'] as String?;
+        if (childId == null) {
+          throw Exception('EditChildScreen requires childId argument');
+        }
+        return MaterialPageRoute(
+          builder: (_) => EditChildScreen(childId: childId),
+        );
+
+      case '/child-report':
+        final args = settings.arguments as Map<String, dynamic>?;
+        final childId = args?['childId'] as String?;
+        if (childId == null) {
+          throw Exception('ChildReportScreen requires childId argument');
+        }
+        return MaterialPageRoute(
+          builder: (_) => ChildReportScreen(childId: childId),
         );
 
       default:

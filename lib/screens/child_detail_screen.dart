@@ -42,16 +42,45 @@ class ChildDetailScreen extends ConsumerWidget {
             ),
           ),
           centerTitle: true,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.edit_rounded),
+              color: Colors.grey.shade700,
+              onPressed: () {
+                Navigator.of(context).pushNamed(
+                  '/edit-child',
+                  arguments: {'childId': childId},
+                );
+              },
+              tooltip: 'עריכה',
+            ),
+          ],
         ),
         body: childAsync.when(
           data: (child) {
             return ListView(
               padding: const EdgeInsets.all(24.0),
               children: [
-                GlucoseStatsCard(
-                  childId: childId,
-                  hypoThreshold: child.glucoseMin,
-                  hyperThreshold: child.glucoseMax,
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  transitionBuilder: (child, animation) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(0, 0.1),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      ),
+                    );
+                  },
+                  child: GlucoseStatsCard(
+                    key: ValueKey('stats-${child.id}'),
+                    childId: childId,
+                    hypoThreshold: child.glucoseMin,
+                    hyperThreshold: child.glucoseMax,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 Card(
@@ -205,7 +234,7 @@ class ChildDetailScreen extends ConsumerWidget {
                     minimumSize: const Size(double.infinity, 56),
                     side: const BorderSide(color: Color(0xFF4CAF50), width: 2),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(24),
                     ),
                   ),
                   icon: const Icon(Icons.calculate_rounded, color: Color(0xFF4CAF50)),
@@ -216,6 +245,32 @@ class ChildDetailScreen extends ConsumerWidget {
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.5,
                       color: Color(0xFF4CAF50),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(
+                      '/child-report',
+                      arguments: {'childId': childId},
+                    );
+                  },
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 56),
+                    side: const BorderSide(color: Color(0xFF2196F3), width: 2),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                  ),
+                  icon: const Icon(Icons.analytics_rounded, color: Color(0xFF2196F3)),
+                  label: const Text(
+                    'דוח מדדים',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.5,
+                      color: Color(0xFF2196F3),
                     ),
                   ),
                 ),
@@ -231,7 +286,7 @@ class ChildDetailScreen extends ConsumerWidget {
                     minimumSize: const Size(double.infinity, 56),
                     side: const BorderSide(color: Color(0xFF2196F3), width: 2),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(24),
                     ),
                   ),
                   child: const Text(

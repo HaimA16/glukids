@@ -5,6 +5,7 @@ import '../repositories/child_repository.dart';
 import '../repositories/firebase_child_repository.dart';
 import '../models/child.dart';
 import '../widgets/child_card.dart';
+import '../widgets/dashboard_summary_card.dart';
 import '../core/snackbar_helper.dart';
 
 final childRepositoryProvider = Provider<ChildRepository>((ref) {
@@ -18,26 +19,80 @@ final childrenStreamProvider = StreamProvider.family<List<ChildModel>, String>(
   },
 );
 
+// Animated card widget with micro-interactions
+class _AnimatedCard extends StatefulWidget {
+  final Widget child;
+  final VoidCallback onTap;
+
+  const _AnimatedCard({
+    required this.child,
+    required this.onTap,
+  });
+
+  @override
+  State<_AnimatedCard> createState() => _AnimatedCardState();
+}
+
+class _AnimatedCardState extends State<_AnimatedCard>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 150),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onTapDown(TapDownDetails details) {
+    _controller.forward();
+  }
+
+  void _onTapUp(TapUpDetails details) {
+    _controller.reverse();
+    widget.onTap();
+  }
+
+  void _onTapCancel() {
+    _controller.reverse();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: _onTapDown,
+      onTapUp: _onTapUp,
+      onTapCancel: _onTapCancel,
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: InkWell(
+          onTap: widget.onTap,
+          borderRadius: BorderRadius.circular(20),
+          child: widget.child,
+        ),
+      ),
+    );
+  }
+}
+
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
-  Future<void> _handleLogout(BuildContext context, WidgetRef ref) async {
-    try {
-      final authService = ref.read(authServiceProvider);
-      await authService.signOut();
-      if (context.mounted) {
-        // Navigate to welcome screen after logout
-        // The auth state changes will ensure WelcomeScreen is shown
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          '/welcome',
-          (route) => false,
-        );
-      }
-    } catch (e) {
-      if (context.mounted) {
-        showErrorSnackBar(context, 'יציאה נכשלה: ${e.toString()}');
-      }
-    }
+  void _handleLogout(BuildContext context) {
+    // Navigate to logout confirmation screen
+    Navigator.of(context).pushNamed('/logout');
   }
 
   @override
@@ -80,9 +135,25 @@ class DashboardScreen extends ConsumerWidget {
           centerTitle: true,
           actions: [
             IconButton(
+              icon: const Icon(Icons.person_rounded),
+              color: Colors.grey.shade700,
+              onPressed: () {
+                Navigator.of(context).pushNamed('/profile');
+              },
+              tooltip: 'פרופיל',
+            ),
+            IconButton(
+              icon: const Icon(Icons.settings_rounded),
+              color: Colors.grey.shade700,
+              onPressed: () {
+                Navigator.of(context).pushNamed('/settings');
+              },
+              tooltip: 'הגדרות',
+            ),
+            IconButton(
               icon: const Icon(Icons.logout_rounded),
               color: Colors.grey.shade700,
-              onPressed: () => _handleLogout(context, ref),
+              onPressed: () => _handleLogout(context),
               tooltip: 'יציאה',
             ),
           ],
@@ -128,19 +199,37 @@ class DashboardScreen extends ConsumerWidget {
                 ),
               );
             }
+            
+            // Show children - use summary cards which are tappable with animations
             return ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              padding: const EdgeInsets.all(16),
               itemCount: children.length,
               itemBuilder: (context, index) {
                 final child = children[index];
-                return ChildCard(
-                  child: child,
-                  onTap: () {
-                    Navigator.of(context).pushNamed(
-                      '/child',
-                      arguments: {'childId': child.id},
+                return TweenAnimationBuilder<double>(
+                  duration: Duration(milliseconds: 300 + (index * 100)),
+                  tween: Tween(begin: 0.0, end: 1.0),
+                  builder: (context, value, child) {
+                    return Opacity(
+                      opacity: value,
+                      child: Transform.translate(
+                        offset: Offset(0, 20 * (1 - value)),
+                        child: child,
+                      ),
                     );
                   },
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: _AnimatedCard(
+                      child: DashboardSummaryCard(child: child),
+                      onTap: () {
+                        Navigator.of(context).pushNamed(
+                          '/child',
+                          arguments: {'childId': child.id},
+                        );
+                      },
+                    ),
+                  ),
                 );
               },
             );

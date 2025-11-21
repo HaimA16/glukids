@@ -9,6 +9,11 @@ abstract class GlucoseRepository {
     String childId,
     int hours,
   );
+  Stream<List<GlucoseReading>> watchReadingsForChildInRange(
+    String childId,
+    DateTime from,
+    DateTime to,
+  );
   Future<void> addReading(GlucoseReading reading);
 }
 
