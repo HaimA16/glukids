@@ -2,7 +2,6 @@
 // This allows tests to run in CI without requiring real Firebase config files
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Initializes Firebase for testing with dummy options that don't require
@@ -38,13 +37,15 @@ Future<void> setupFirebaseForTests() async {
   } on FirebaseException catch (e) {
     // If Firebase initialization fails (e.g., already initialized),
     // we ignore it and continue - this is fine for tests
-    if (e.code != 'already-initialized') {
-      // Only log if it's not the expected "already initialized" error
-      debugPrint('Firebase test initialization warning: ${e.code} - ${e.message}');
+    // Silently ignore errors - tests should work without Firebase
+    if (e.code == 'already-initialized') {
+      // This is expected and fine
+      return;
     }
+    // Other Firebase errors are also fine - tests don't need real Firebase
   } catch (e) {
     // For other errors, we also continue - tests should work without Firebase
-    debugPrint('Firebase test initialization error: $e');
+    // Silently ignore - no logging needed in tests
   }
 }
 

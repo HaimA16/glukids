@@ -95,6 +95,15 @@ class GlucoseStatsCard extends ConsumerWidget {
                         color: Color(0xFF1A1A1A),
                       ),
                     ),
+                    const SizedBox(width: 8),
+                    Tooltip(
+                      message: 'מספר המדידות ב-24 השעות האחרונות',
+                      child: Icon(
+                        Icons.info_outline_rounded,
+                        size: 20,
+                        color: Colors.grey.shade400,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 20),
