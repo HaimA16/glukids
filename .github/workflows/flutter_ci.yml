@@ -2,33 +2,29 @@ name: Flutter CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          flutter-version: '3.24.3'
           channel: 'stable'
-          cache: true
-      
+
       - name: Install dependencies
         run: flutter pub get
-      
+
       - name: Run Flutter analyze
         run: flutter analyze
-        continue-on-error: false
-      
+
       - name: Run tests
         run: flutter test --reporter expanded
-        continue-on-error: false
-
