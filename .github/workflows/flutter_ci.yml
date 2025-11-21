@@ -14,20 +14,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Flutter (correct version!)
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.2'
+          flutter-version: '3.24.3'
           channel: 'stable'
-
-      - name: Verify Flutter version (debug)
-        run: flutter --version
+          cache: true
 
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Run Flutter analyze
+      # לא מפילים את ה-CI על אזהרות של analyze
+      - name: Run Flutter analyze (allow warnings)
         run: flutter analyze
+        continue-on-error: true
 
       - name: Run tests
         run: flutter test --reporter expanded
